@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI助手 - 智能解决方案</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-light: #9ca3af;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            width: 1440px;
+            height: 900px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* 左侧导航栏样式 */
+        .sidebar {
+            width: 240px;
+            height: 100%;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 24px 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+        }
+
+        .logo h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .nav-group {
+            margin-bottom: 16px;
+            padding: 0 16px;
+        }
+
+        .nav-group-title {
+            color: var(--text-light);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 8px 8px 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(99, 102, 241, 0.08);
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-top: auto;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .user-info {
+            flex-grow: 1;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .user-role {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        /* 主内容区样式 */
+        .main-content {
+            flex-grow: 1;
+            height: 100%;
+            padding: 24px 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            width: 320px;
+        }
+
+        .search-bar i {
+            color: var(--text-light);
+            margin-right: 8px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            color: var(--text-primary);
+        }
+
+        /* 卡片网格样式 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            background: rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-stats {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .card-stats i {
+            margin-right: 4px;
+        }
+
+        .card-stats span {
+            margin-right: 12px;
+        }
+
+        .card-action {
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-action i {
+            margin-left: 4px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover .card-action i {
+            transform: translateX(4px);
+        }
+
+        /* 装饰元素 */
+        .card::after {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(99, 102, 241, 0.03);
+            border-radius: 50%;
+            z-index: 0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover::after {
+            transform: scale(2);
+        }
+
+        /* Font Awesome 图标替代 */
+        .icon-dashboard::before { content: "📊"; }
+        .icon-ai::before { content: "🤖"; }
+        .icon-chat::before { content: "💬"; }
+        .icon-analyze::before { content: "📈"; }
+        .icon-settings::before { content: "⚙️"; }
+        .icon-search::before { content: "🔍"; }
+        .icon-users::before { content: "👥"; }
+        .icon-stats::before { content: "📊"; }
+        .icon-arrow::before { content: "→"; }
+    </style>
+</head>
+<body>
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTYgMkM4LjI2ODAxIDIgMiA4LjI2ODAxIDIgMTZDMiAyMy43MzIgOC4yNjgwMSAzMCAxNiAzMEMyMy43MzIgMzAgMzAgMjMuNzMyIDMwIDE2QzMwIDguMjY4MDEgMjMuNzMyIDIgMTYgMloiIGZpbGw9IiM2MzY2ZjEiLz48cGF0aCBkPSJNMjIgMTJDMjIgMTQuMjA5MSAyMC4yMDkxIDE2IDE4IDE2QzE1Ljc5MDkgMTYgMTQgMTQuMjA5MSAxNCAxMkMxNCA5Ljc5MDg2IDE1Ljc5MDkgOCAxOCA4QzIwLjIwOTEgOCAyMiA5Ljc5MDg2IDIyIDEyWiIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNMTIgMTlDMTIgMjAuNjU2OSAxMC42NTY5IDIyIDkgMjJDNy4zNDMxNSAyMiA2IDIwLjY1NjkgNiAxOUM2IDE3LjM0MzEgNy4zNDMxNSAxNiA5IDE2QzEwLjY1NjkgMTYgMTIgMTcuMzQzMSAxMiAxOVoiIGZpbGw9IndoaXRlIi8+PC9zdmc+" alt="Logo">
+            <h1>智能助手</h1>
+        </div>
+        <div class="nav-list">
+            <div class="nav-group">
+                <div class="nav-group-title">主要功能</div>
+                <div class="nav-item active">
+                    <i class="icon-dashboard"></i>
+                    <span>仪表盘</span>
+                </div>
+                <div class="nav-item">
+                    <i class="icon-ai"></i>
+                    <span>AI助手</span>
+                </div>
+                <div class="nav-item">
+                    <i class="icon-chat"></i>
+                    <span>聊天机器人</span>
+                </div>
+                <div class="nav-item">
+                    <i class="icon-analyze"></i>
+                    <span>数据分析</span>
+                </div>
+            </div>
+            <div class="nav-group">
+                <div class="nav-group-title">系统设置</div>
+                <div class="nav-item">
+                    <i class="icon-settings"></i>
+                    <span>个人设置</span>
+                </div>
+                <div class="nav-item">
+                    <i class="icon-users"></i>
+                    <span>团队管理</span>
+                </div>
+            </div>
+        </div>
+        <div class="user-profile">
+            <div class="user-avatar">CL</div>
+            <div class="user-info">
+                <div class="user-name">陈丽</div>
+                <div class="user-role">高级账户</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="header">
+            <h1 class="page-title">探索AI能力</h1>
+            <div class="search-bar">
+                <i class="icon-search"></i>
+                <input type="text" placeholder="搜索功能、工具或帮助...">
+            </div>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="icon-chat"></i>
+                </div>
+                <h3 class="card-title">智能对话</h3>
+                <p class="card-description">与先进的AI助手进行自然对话，获取信息、建议和解决方案。</p>
+                <div class="card-footer">
+                    <div class="card-stats">
+                        <i class="icon-stats"></i>
+                        <span>使用率 89%</span>
+                    </div>
+                    <div class="card-action">
+                        开始对话 <i class="icon-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="icon-analyze"></i>
+                </div>
+                <h3 class="card-title">数据分析</h3>
+                <p class="card-description">使用AI分析您的数据，挖掘洞察，生成报告和可视化图表。</p>
+                <div class="card-footer">
+                    <div class="card-stats">
+                        <i class="icon-stats"></i>
+                        <span>使用率 76%</span>
+                    </div>
+                    <div class="card-action">
+                        分析数据 <i class="icon-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="icon-ai"></i>
+                </div>
+                <h3 class="card-title">内容创作</h3>
+                <p class="card-description">让AI帮您创作高质量内容，包括文章、脚本、广告文案等。</p>
+                <div class="card-footer">
+                    <div class="card-stats">
+                        <i class="icon-stats"></i>
+                        <span>使用率 92%</span>
+                    </div>
+                    <div class="card-action">
+                        开始创作 <i class="icon-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="icon-chat"></i>
+                </div>
+                <h3 class="card-title">翻译助手</h3>
+                <p class="card-description">实时翻译多种语言，保持语境和专业术语的准确性。</p>
+                <div class="card-footer">
+                    <div class="card-stats">
+                        <i class="icon-stats"></i>
+                        <span>使用率 67%</span>
+                    </div>
+                    <div class="card-action">
+                        开始翻译 <i class="icon-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="icon-settings"></i>
+                </div>
+                <h3 class="card-title">智能助理</h3>
+                <p class="card-description">个性化的AI助理，帮助您管理日程、提醒和重要任务。</p>
+                <div class="card-footer">
+                    <div class="card-stats">
+                        <i class="icon-stats"></i>
+                        <span>使用率 84%</span>
+                    </div>
+                    <div class="card-action">
+                        设置助理 <i class="icon-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="icon-analyze"></i>
+                </div>
+                <h3 class="card-title">文档解析</h3>
+                <p class="card-description">快速分析和总结文档内容，提取关键信息和见解。</p>
+                <div class="card-footer">
+                    <div class="card-stats">
+                        <i class="icon-stats"></i>
+                        <span>使用率 72%</span>
+                    </div>
+                    <div class="card-action">
+                        上传文档 <i class="icon-arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
