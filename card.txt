@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dub - Integrations</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #f9fafb;
+            color: #111827;
+            display: flex;
+            height: 900px;
+            width: 1440px;
+            overflow: hidden;
+        }
+        
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 180px;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            color: #4b5563;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .sidebar-header .back-arrow {
+            margin-right: 8px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-section-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            padding: 0 16px;
+            margin-bottom: 8px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            color: #4b5563;
+            font-size: 14px;
+            cursor: pointer;
+            border-left: 2px solid transparent;
+        }
+        
+        .sidebar-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .sidebar-item.active {
+            color: #2563eb;
+            background-color: rgba(59, 130, 246, 0.08);
+            border-left: 2px solid #2563eb;
+            font-weight: 500;
+        }
+        
+        .sidebar-item .icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 12px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.7;
+        }
+        
+        .sidebar-spacer {
+            flex-grow: 1;
+        }
+        
+        .usage-section {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .usage-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        
+        .usage-reset {
+            font-size: 12px;
+            color: #6b7280;
+            margin: 8px 0 12px 0;
+        }
+        
+        .pro-button {
+            background-color: #000000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .content-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .create-button {
+            background-color: #000000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+                        font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        /* 集成卡片网格 */
+        .integrations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        
+        .integration-card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+        
+        .integration-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color: #d1d5db;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .integration-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .integration-logo.raycast {
+            background-color: #FF5D5B;
+        }
+        
+        .integration-logo.slack {
+            background-color: #4A154B;
+        }
+        
+        .integration-logo.zapier {
+            background-color: #FF6C37;
+        }
+        
+        .integration-logo.acme {
+            background-color: #667eea;
+        }
+        
+        .integration-logo.make {
+            background-color: #8B46FF;
+        }
+        
+        .integration-logo.stripe {
+            background-color: #635BFF;
+        }
+        
+        .integration-logo.shopify {
+            background-color: #95BF47;
+        }
+        
+        .integration-logo.segment {
+            background-color: #38b2ac;
+        }
+        
+        .integration-logo.wordpress {
+            background-color: #21759b;
+        }
+        
+        .integration-title {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .verified-badge {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: #FCD34D;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+        
+        .integration-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .integration-description {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        
+        .integration-installs {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        .download-icon {
+            margin-right: 6px;
+            opacity: 0.7;
+        }
+        
+        /* 用户头像和其他UI元素 */
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #6366f1;
+            position: absolute;
+            top: 16px;
+            right: 32px;
+        }
+        
+        /* 特殊元素 */
+        .help-button {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 16px;
+            right: 72px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <span class="back-arrow">&lt;</span>
+            <span>Settings</span>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Workspace</div>
+            <div class="sidebar-item">
+                <div class="icon">⚙️</div>
+                General
+            </div>
+            <div class="sidebar-item">
+                <div class="icon">💰</div>
+                Billing
+            </div>
+            <div class="sidebar-item">
+                <div class="icon">🌐</div>
+                Domains
+            </div>
+            <div class="sidebar-item">
+                <div class="icon">📚</div>
+                Library
+            </div>
+            <div class="sidebar-item">
+                <div class="icon">👥</div>
+                People
+            </div>
+            <div class="sidebar-item active">
+                <div class="icon">🔌</div>
+                Integrations
+            </div>
+            <div class="sidebar-item">
+                <div class="icon">🔒</div>
+                Security
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Developer</div>
+            <div class="sidebar-item">
+                <div class="icon">🔑</div>
+                API Keys
+            </div>
+            <div class="sidebar-item">
+                <div class="icon">🔐</div>
+                OAuth Apps
+            </div>
+            <div class="sidebar-item">
+                <div class="icon">🪝</div>
+                Webhooks
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Account</div>
+            <div class="sidebar-item">
+                <div class="icon">🔔</div>
+                Notifications
+            </div>
+        </div>
+        
+        <div class="sidebar-spacer"></div>
+        
+        <div class="usage-section">
+            <div class="usage-row">
+                <span>Events</span>
+                <span>7 of 1K</span>
+            </div>
+            <div class="usage-row">
+                <span>Links</span>
+                <span>6 of 25</span>
+            </div>
+            <div class="usage-reset">Usage will reset Feb 14, 2025</div>
+            <button class="pro-button">Get Dub Pro</button>
+        </div>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="help-button">?</div>
+        <div class="user-avatar"></div>
+        
+        <div class="content-header">
+            <h1 class="content-title">Integrations</h1>
+            <button class="create-button">Create Integration</button>
+        </div>
+        
+        <div class="integrations-grid">
+            <!-- Raycast 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo raycast">R</div>
+                    <div>
+                        <div class="integration-title">Raycast <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Official Raycast integration for Dub. Shorten and manage your links directly in Raycast.</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    211 installs
+                </div>
+            </div>
+            
+            <!-- Slack 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo slack">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                            <path d="M6,15a3,3,0,1,1-3-3H6Zm1,0a3,3,0,0,1,6,0v7.5a3,3,0,0,1-6,0Zm9-10a3,3,0,1,1,3,3H16Zm-1,0a3,3,0,0,1-6,0V5A3,3,0,0,1,15,5ZM9,9a3,3,0,1,1,3,3H9Zm0,1a3,3,0,0,1,0,6H1.5a3,3,0,0,1,0-6Zm15,6a3,3,0,1,1-3-3H24Zm-1,0a3,3,0,0,1-6,0v-3a3,3,0,0,1,6,0Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="integration-title">Slack <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Official Slack integration for Dub. Shorten and manage your links directly in Slack.</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    51 installs
+                </div>
+            </div>
+            
+            <!-- Zapier 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo zapier">Z</div>
+                    <div>
+                        <div class="integration-title">Zapier <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Official Zapier integration for Dub. Shorten and manage your links with Zapier.</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    37 installs
+                </div>
+            </div>
+            
+            <!-- Acme 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo acme">A</div>
+                    <div>
+                        <div class="integration-title">Acme <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Dub OAuth Example App - learn how to integrate Dub into your app using OAuth 2.0.</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    37 installs
+                </div>
+            </div>
+            
+            <!-- Make 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo make">M</div>
+                    <div>
+                        <div class="integration-title">Make <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Official Make.com integration for Dub. Shorten and manage your links directly on Make.com.</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    29 installs
+                </div>
+            </div>
+            
+            <!-- Stripe 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo stripe">S</div>
+                    <div>
+                        <div class="integration-title">Stripe <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Connect your Stripe account to set up conversion tracking and understand how your clicks are converting to sales.</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    13 installs
+                </div>
+            </div>
+            
+            <!-- Shopify 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo shopify">S</div>
+                    <div>
+                        <div class="integration-title">Shopify <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Connect your Shopify store to set up conversion tracking and understand how your clicks are converting to sales.</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    4 installs
+                </div>
+            </div>
+            
+            <!-- Segment 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo segment">S</div>
+                    <div>
+                        <div class="integration-title">Segment <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Official Segment integration for Dub</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    1 install
+                </div>
+            </div>
+            
+            <!-- WordPress 集成卡片 -->
+            <div class="integration-card">
+                <div class="card-header">
+                    <div class="integration-logo wordpress">W</div>
+                    <div>
+                        <div class="integration-title">WordPress <span class="verified-badge"></span></div>
+                        <div class="integration-subtitle">↦ Dub</div>
+                    </div>
+                </div>
+                <div class="integration-description">Offical WordPress integration for Dub.</div>
+                <div class="integration-installs">
+                    <span class="download-icon">↓</span>
+                    1 install
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
